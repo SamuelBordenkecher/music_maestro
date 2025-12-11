@@ -7,6 +7,7 @@ from .validators import validate_zip, validate_dob
 
 # Create your models here.
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
     is_teacher = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
     date_of_birth = models.DateField(null=True, blank=True, validators=[validate_dob])
@@ -18,6 +19,9 @@ class User(AbstractUser):
     profile_image = models.ImageField(upload_to='profile_images', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True,)
     updated_at = models.DateTimeField(auto_now=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def age(self):
         if self.date_of_birth:

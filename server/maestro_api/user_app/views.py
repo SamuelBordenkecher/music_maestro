@@ -24,7 +24,7 @@ class LogIn(APIView):
         data = request.data.copy()
         data['username'] = data.get('email')
         user = authenticate(
-            username=data.get('username'), password=data.get('password')
+            email=data.get('email'), password=data.get('password')
         )
 
         if user:

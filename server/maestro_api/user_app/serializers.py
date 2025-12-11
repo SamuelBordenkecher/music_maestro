@@ -7,14 +7,21 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
-
+        fields = [
+            "id", 'token', "email", "username", "password", "first_name", "last_name",
+            "date_of_birth", "zip_code", "city", "state", "latitude",
+            "longitude", "profile_image", "created_at", "updated_at"
+        ]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
     def get_token(self, user):
         return user.auth_token.key
     
     def create(self, validated_data):
         email = validated_data.get('email')
         validated_data['username'] = email
-        user = User.objects.create_user(**validated_data)
+        password = validated_data.pop("password")
+        user = User.objects.create_user(password=password, **validated_data)
         Token.objects.create(user=user)
         return user
