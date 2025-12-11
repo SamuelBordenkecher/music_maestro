@@ -15,6 +15,7 @@ class UserSerializer(ModelSerializer):
         extra_kwargs = {
             "password": {"write_only": True},
         }
+        read_only_fields = ["id", "username", "token", "created_at", "updated_at"]
     def get_token(self, user):
         return user.auth_token.key
     

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
@@ -10,9 +10,7 @@ from .serializers import UserSerializer, Token
 
 class SignUp(APIView):
     def post(self, request):
-        data = request.data.copy()
-        data['username'] = data.get('email')
-        new_user = UserSerializer(data=data)
+        new_user = UserSerializer(data=request.data)
         if new_user.is_valid():
             new_user.save()
             return Response(new_user.data, status=s.HTTP_201_CREATED)
@@ -21,17 +19,17 @@ class SignUp(APIView):
         
 class LogIn(APIView):
     def post(self, request):
-        data = request.data.copy()
-        data['username'] = data.get('email')
+        email = request.data.get('email')
+        password = request.data.get("password")
         user = authenticate(
-            email=data.get('email'), password=data.get('password')
+            username=email, password=password
         )
-
         if user:
-            Token.objects.get_or_create(user=user)
+            token, created = Token.objects.get_or_create(user=user)
+            # login(request, user)
             return Response(UserSerializer(user).data)
         else:
-            return Response('No user matching credentials', status=s.HTTP_404_NOT_FOUND)
+            return Response({'Detail': 'No user matching credentials'}, status=s.HTTP_404_NOT_FOUND)
         
 class UserPermissions(APIView):
     authentication_classes = [TokenAuthentication]
