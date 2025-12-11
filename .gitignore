@@ -1,0 +1,42 @@
+
+# Python / Django
+
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.log
+local_settings.py
+media/
+staticfiles/
+.env
+*.pot
+
+# Virtual environments
+env/
+venv/
+.mmvenv/
+
+# Node / React / Vite
+
+node_modules/
+dist/
+build/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# IDEs / Editors
+
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+
+# OS / Misc
+
+.DS_Store
+Thumbs.db
