@@ -150,15 +150,19 @@ npm test
 Create a .env.example file like this:
 
 # Django
+```
 DEBUG=True
 SECRET_KEY='your-secret-key-here'
+```
 
 # Database
+```
 DB_NAME=your_db_name
 DB_USER=your_db_user
 DB_PASSWORD=your_db_password_or_blank
 DB_HOST=localhost
 DB_PORT=5432
+```
 
 
 Note: Django parses quotes and strips matching quotes at the beginning and end. Quotes are not needed unless the value has special characters or spaces.
