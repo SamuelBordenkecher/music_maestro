@@ -17,13 +17,14 @@ class Inquiry(models.Model):
 
 
 class MessageThread(models.Model):
-    inquiry = models.OneToOneField(Inquiry, on_delete=models.CASCADE, related_name='thread', null=True, blank=True)
-    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='message_threads')
+    inquiry = models.OneToOneField(Inquiry, on_delete=models.CASCADE, related_name='thread')
+    teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE, related_name='threads')
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='threads')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        usernames = ", ".join([user.username for user in self.participants.all()])
-        return f"Thread between {usernames}"
+        return f"Thread between {self.teacher.user.username} and {self.student.user.username}"
+
 
 class Message(models.Model):
     thread = models.ForeignKey(MessageThread, on_delete=models.CASCADE, related_name='messages')
@@ -33,5 +34,5 @@ class Message(models.Model):
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Message from {self.sender.username} at {self.created_at}"
+        return f"Message from {self.sender.username} in {self.thread.id}"
 
