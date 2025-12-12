@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from .serializers import Instrument, InstrumentSerializer
 
 # Create your views here.
 
-class test_view(APIView):
+class AllInstruments(APIView):
     def get(self, request):
-        return Response(f"{request} was successful")
+        instruments = Instrument.objects.all()
+        return Response(InstrumentSerializer(instruments, many=True).data)

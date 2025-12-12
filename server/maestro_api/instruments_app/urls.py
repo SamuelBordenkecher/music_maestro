@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import test_view
+from .views import AllInstruments
 
 urlpatterns = [
-    path('test/', test_view.as_view(), name='test_view'),
+    path('', AllInstruments.as_view(), name='all-instruments'),
 ]
