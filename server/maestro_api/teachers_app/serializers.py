@@ -7,7 +7,7 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
 
     instruments = InstrumentSerializer(many=True, read_only=True)
 
-    instrument_id = serializers.PrimaryKeyRelatedField(
+    instrument_ids = serializers.PrimaryKeyRelatedField(
         queryset=Instrument.objects.all(),
         many=True,
         write_only=True,
@@ -17,4 +17,16 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeacherProfile
         fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at']
+
+    def update(self, instance, validated_data):
+        instruments = validated_data.pop('instruments', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        if instruments is not None:
+            instance.instruments.set(instruments)
+        return instance
+
+
+
