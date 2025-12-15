@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TeacherProfileSerializer, TeacherProfile
+from .serializers import TeacherProfileSerializer
+from .models import TeacherProfile
 from user_app.views import UserPermissions
 from rest_framework import status as s
 
@@ -36,14 +37,10 @@ class AllTeachers(APIView):
         
 class ATeacher(APIView):
 
-    def get_teacher(self, id):
-        selected_teacher = get_object_or_404(TeacherProfile, id=id)
-        return selected_teacher
-
-
     def get(self, request, id):
-        selected_teacher = self.get_teacher(id)
-        ser_teacher = TeacherProfileSerializer(selected_teacher)
+        teacher = get_object_or_404(TeacherProfile, id=id)
+        ser_teacher = TeacherProfileSerializer(teacher)
         return Response(ser_teacher.data, status=s.HTTP_200_OK)
+
     
     

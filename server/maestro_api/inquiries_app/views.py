@@ -7,15 +7,13 @@ from django.shortcuts import get_object_or_404
 from .serializers import InquirySerializer, MessageSerializer, MessageThreadSerializer, Inquiry, MessageThread, Message
 from teachers_app.models import TeacherProfile
 from students_app.models import StudentProfile
-# Create your views here.
 
+# Create your views here.
 
 class SendInquiry(UserPermissions):
 
     def post(self, request):
-        print("oy")
         if not request.user.is_student:
-            print("OH")
             return Response(
                 {'detail': 'Only students may send inquiries.'},
                 status=s.HTTP_403_FORBIDDEN
@@ -33,6 +31,45 @@ class SendInquiry(UserPermissions):
 
             ser_inquiry = InquirySerializer(inquiry)
             return Response(ser_inquiry.data, status=s.HTTP_201_CREATED)
+        
+
+class MyInquiries(UserPermissions):
+    def get(self, request):
+        if not request.user.is_teacher:
+            return Response(
+                {'detail': 'Only teachers may view inquiries.'},
+                status=s.HTTP_403_FORBIDDEN
+            )
+        
+        teacher = request.user.teacher_profile
+        inquiries = teacher.inquiries.all().order_by('-created_at')
+        ser_inquiries = InquirySerializer(inquiries, many=True)
+        return Response(ser_inquiries.data, status=s.HTTP_200_OK)
+
+
+class InquiryDetail(UserPermissions):
+    def get(self, request, inquiry_id):
+        inquiry = get_object_or_404(
+            Inquiry, id=inquiry_id, teacher=request.user.teacher_profile
+        )
+        ser_inquiry = InquirySerializer(inquiry)
+        return Response(ser_inquiry.data, status=s.HTTP_200_OK)
+
+
+
+    def delete(self, request, inquiry_id):
+        inquiry = get_object_or_404(
+            Inquiry, id=inquiry_id, teacher=request.user.teacher_profile
+        )
+        inquiry.delete()
+        return Response(status=s.HTTP_204_NO_CONTENT)
+
+
+
+
+
+
+
 
 
 class test_view(APIView):

@@ -30,12 +30,7 @@ class MyStudentProfile(UserPermissions):
 
 class Astudent(APIView):
 
-    def get_student(self, id):
-        selected_student = get_object_or_404(StudentProfile, id=id)
-        return selected_student
-
-
     def get(self, request, id):
-        selected_student = self.get_student(id)
-        ser_student = StudentProfileSerializer(selected_student)
+        student = get_object_or_404(StudentProfile, id=id)
+        ser_student = StudentProfileSerializer(student)
         return Response(ser_student.data, status=s.HTTP_200_OK)
