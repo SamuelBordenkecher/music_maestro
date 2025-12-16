@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import test_view
+from .views import CreatePaymentIntent
+from .webhooks import stripe_webhook
 
 urlpatterns = [
-    path('test/', test_view.as_view(), name='test_view'),
+    path('create-intent/', CreatePaymentIntent.as_view(), name='create_payment_intent'),
+    path('stripe-webhook/', stripe_webhook, name='stripe_webhook'),
 ]

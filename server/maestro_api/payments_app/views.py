@@ -48,4 +48,6 @@ class CreatePaymentIntent(UserPermissions):
         
         except Exception as e:
             return Response({'error': str(e)}, status=s.HTTP_400_BAD_REQUEST)
+        
+
             
