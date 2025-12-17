@@ -47,7 +47,7 @@ class AllTeachers(APIView):
             results.append(ser_teacher)
         
         if user:
-            results.sort(key=lambda x: x["distance_miles"])
+            results.sort(key=lambda x: (x["distance_miles"] is None, x["distance_miles"]))
 
         return Response(results, status=s.HTTP_200_OK)
 

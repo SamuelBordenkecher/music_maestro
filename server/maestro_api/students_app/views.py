@@ -7,12 +7,6 @@ from rest_framework import status as s
 from maestro_api.utilities import miles_between
 
 # Create your views here.
-
-class test_view(APIView):
-    def get(self, request):
-        return Response(f"{request} was successful")
-    
-
 class MyStudentProfile(UserPermissions):
 
     def get(self, request):
