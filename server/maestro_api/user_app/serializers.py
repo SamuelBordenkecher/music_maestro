@@ -3,6 +3,7 @@ from rest_framework.authtoken.models import Token
 from .models import User
 from teachers_app.models import TeacherProfile
 from students_app.models import StudentProfile
+from .utilities import geocode_zip
 
 class UserSerializer(serializers.ModelSerializer):
     token = serializers.SerializerMethodField(read_only=True)
@@ -34,7 +35,13 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         email = validated_data.get('email')
         validated_data['username'] = email
+        zip_code = validated_data.get("zip_code")
         password = validated_data.pop("password")
+
+        lat, lng = geocode_zip(zip_code)
+        validated_data["latitude"] = lat
+        validated_data["longitude"] = lng
+
         user = User.objects.create_user(password=password, **validated_data)
         if user.is_teacher:
             TeacherProfile.objects.create(user=user)

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .serializers import StudentProfileSerializer, StudentProfile
 from user_app.views import UserPermissions
 from rest_framework import status as s
+from maestro_api.utilities import miles_between
 
 # Create your views here.
 
@@ -32,5 +33,20 @@ class Astudent(APIView):
 
     def get(self, request, id):
         student = get_object_or_404(StudentProfile, id=id)
-        ser_student = StudentProfileSerializer(student)
-        return Response(ser_student.data, status=s.HTTP_200_OK)
+        ser_student = StudentProfileSerializer(student).data
+
+        user = request.user if request.user.is_authenticated else None
+        distance = None
+
+        if user:
+            distance = miles_between(
+                user.latitude,
+                user.longitude,
+                student.user.latitude,
+                student.user.longitude
+            )
+
+        ser_student['distance_miles'] = distance
+
+        return Response(ser_student, status=s.HTTP_200_OK)
+    

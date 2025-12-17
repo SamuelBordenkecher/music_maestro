@@ -5,6 +5,7 @@ from .serializers import TeacherProfileSerializer
 from .models import TeacherProfile
 from user_app.views import UserPermissions
 from rest_framework import status as s
+from maestro_api.utilities import miles_between
 
 # Create your views here.
 
@@ -29,9 +30,26 @@ class MyTeacherProfile(UserPermissions):
         
 class AllTeachers(APIView):
     def get(self, request):
-        teacher = TeacherProfile.objects.all()
-        ser_teacher = TeacherProfileSerializer(teacher, many=True)
-        return Response(ser_teacher.data, status=s.HTTP_200_OK)
+        user = request.user if request.user.is_authenticated else None
+        teachers = TeacherProfile.objects.all()
+        results = []
+        for teacher in teachers:
+            ser_teacher = TeacherProfileSerializer(teacher).data
+            distance = None
+            if user:
+                distance = miles_between(
+                    user.latitude,
+                    user.longitude,
+                    teacher.user.latitude,
+                    teacher.user.longitude
+                )
+            ser_teacher['distance_miles'] = distance
+            results.append(ser_teacher)
+        
+        if user:
+            results.sort(key=lambda x: x["distance_miles"])
+
+        return Response(results, status=s.HTTP_200_OK)
 
 
         
@@ -39,8 +57,21 @@ class ATeacher(APIView):
 
     def get(self, request, id):
         teacher = get_object_or_404(TeacherProfile, id=id)
-        ser_teacher = TeacherProfileSerializer(teacher)
-        return Response(ser_teacher.data, status=s.HTTP_200_OK)
+        ser_teacher = TeacherProfileSerializer(teacher).data
+
+        user = request.user if request.user.is_authenticated else None
+        distance = None
+
+        if user:
+            distance = miles_between(
+                user.latitude,
+                user.longitude,
+                teacher.user.latitude,
+                teacher.user.longitude
+            )
+        ser_teacher['distance_miles'] = distance
+
+        return Response(ser_teacher, status=s.HTTP_200_OK)
 
     
     
