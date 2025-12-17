@@ -20,19 +20,36 @@ def stripe_webhook(request):
         )
     except ValueError:
         return HttpResponse(status=400)
-    
     except stripe.error.SignatureVerificationError:
         return HttpResponse(status=400)
-    
-    if event['type'] == 'payment_intent.succeeded':
-        intent = event['data']['object']
-        lesson_id = intent.metadata.get('lesson_id')
-        try:
-            lesson = Lesson.objects.get(id=lesson_id)
-            payment = lesson.payment
-            payment.status = 'paid'
-            payment.save()
-        except Lesson.DoesNotExist:
-            return HttpResponse(status=400)
-    
+
+    try:
+        if event['type'] == 'payment_intent.succeeded':
+            intent = event['data']['object']
+            lesson_id = intent.metadata.get('lesson_id')
+
+            if not lesson_id:
+                print("Webhook: Missing lesson_id in metadata")
+                return HttpResponse(status=400)
+
+            try:
+                lesson = Lesson.objects.get(id=lesson_id)
+            except Lesson.DoesNotExist:
+                print(f"Webhook: Lesson {lesson_id} does not exist")
+                return HttpResponse(status=400)
+
+            payment = getattr(lesson, "payment", None)
+            if payment:
+                payment.status = 'paid'
+                payment.save()
+            else:
+                print(f"Webhook: Payment for lesson {lesson_id} does not exist")
+
+        else:
+            print(f"Webhook: Ignoring {event['type']}")
+
+    except Exception as e:
+        print("Webhook error:", e)
+        return HttpResponse(status=500)
+
     return HttpResponse(status=200)
