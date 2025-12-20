@@ -35,7 +35,7 @@ class LogIn(APIView):
         if user:
             token, created = Token.objects.get_or_create(user=user)
             # login(request, user)
-            return Response(UserSerializer(user).data)
+            return Response(UserSerializer(user).data, status=s.HTTP_200_OK)
         else:
             return Response({'Detail': 'No user matching credentials'}, status=s.HTTP_404_NOT_FOUND)
         
@@ -51,7 +51,7 @@ class Info(UserPermissions):
 class LogOut(UserPermissions):
     def post(self, request):
         request.user.auth_token.delete()
-        return Response(f"{request.user.username} has been logged out.")
+        return Response(f"{request.user.username} has been logged out.", status=s.HTTP_204_NO_CONTENT)
     
 class Delete(UserPermissions):
     def delete(self, request):
