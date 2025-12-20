@@ -3,7 +3,13 @@ import App from "./App.jsx";
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./components/HomePage";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
-import { getUser } from "./services.jsx";
+import MyProfilePage from "./pages/MyProfilePage.jsx";
+import TeacherProfilePage from "./pages/TeacherProfilePage.jsx";
+import StudentProfilePage from "./pages/StudentProfilePage.jsx";
+import LessonFormPage from "./pages/LessonFormPage.jsx";
+import LessonsPage from "./pages/LessonPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import RoleProtectedRoute from "./components/RoleProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -11,16 +17,31 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <NotFoundPage/>,
     children: [
+      {index: true, element: <HomePage />},
+      {path: "/auth", element: <AuthPage />},
+      {path: "/teachers/:id", element: <TeacherProfilePage />},
+
       {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        element: <AuthPage />,
-        index: true,
-        loader: getUser
-      }
-    ],
+        element: <ProtectedRoute user={user} />,
+        children: [
+            {path: "/myprofile", element: <MyProfilePage />},
+
+            {
+                element: <RoleProtectedRoute user={user} role="teacher" />,
+                children: [
+                    {path: '/students/:id', element: <StudentProfilePage />},
+                    {path: "/lessons/new", element: <LessonFormPage />},
+                    {path: "/lessons/:id/edit", element: <LessonFormPage />},
+                ],
+            },
+            {
+                element: <RoleProtectedRoute role="student" />,
+                children: [
+                    {path: "lessons/:id", element: <LessonsPage />},
+                ]
+            },
+        ],
+    }],
   },
 ]);
 
