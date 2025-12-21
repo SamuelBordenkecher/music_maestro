@@ -1,6 +1,8 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useOutletContext } from "react-router-dom";
 
-function ProtectedRoute({ user }) {
+function ProtectedRoute() {
+    const { user } = useOutletContext();
+
     if (!user) {
         return <Navigate to="/auth" />;
     }

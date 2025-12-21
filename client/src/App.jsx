@@ -18,16 +18,16 @@ function App() {
     }
   }, [user])
 
-  contextObj = {
+  const contextObj = {
     user,
     setUser,
   }
-}
 
   return (
     <>
-      <Outlet context = {contextObj}/>
+      <Outlet context={contextObj}/>
     </>
   )
+}
 
 export default App

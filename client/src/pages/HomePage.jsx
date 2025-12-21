@@ -5,7 +5,8 @@ import { pokemonRequest } from "../apiRequest";
 import { Link } from "react-router-dom";
 
 export default function HomePage() {
-  const { initialPokemon } = useOutletContext();
+  const { user } = useOutletContext();
+  const [teachers, setTeachers]
 
   return (
   <div className="main-page-contents">

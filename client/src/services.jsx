@@ -1,7 +1,7 @@
 import axios from "axios"
 
 export const api = axios.create({
-    baseURL: "http://127.0.0.1:8000/api/",  //Add endpoint when making request.
+    baseURL: "http://127.0.0.1:8000/api/",
 })
 
 
@@ -36,4 +36,14 @@ export const logOut = async () => {
         return null;
     }
     alert("Unable to logout")
+}
+
+export const getAllTeachers = async () => {
+    try {
+        const response = await api.get("teachers/");
+        return response.data;
+    } catch (err) {
+        console.log("Error fetching Teachers");
+        return [];
+    }
 }
