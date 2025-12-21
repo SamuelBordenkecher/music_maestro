@@ -14,7 +14,7 @@ export default function Navbar({ user, onLogout }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Search for:", searchInput); // placeholder
+    console.log("Search for:", searchInput); 
   };
 
   return (
@@ -45,7 +45,7 @@ export default function Navbar({ user, onLogout }) {
 
           {user && (
             <li className="nav-item">
-              <NavLink className="nav-link" to="/profile">
+              <NavLink className="nav-link" to="/myprofile">
                 My Profile
               </NavLink>
             </li>

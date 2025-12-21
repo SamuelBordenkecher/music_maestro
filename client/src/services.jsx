@@ -47,3 +47,23 @@ export const getAllTeachers = async () => {
         return [];
     }
 }
+
+export const getTeacherByID = async (id) => {
+    try {
+        const response = await api.get(`teachers/${id}/`);
+        return response.data;
+    } catch (err) {
+        console.log(`Error fetching Teacher ${id}`);
+        return null;
+    }
+}
+
+export const getStudentByID = async (id) => {
+    try {
+        const response = await api.get(`students/${id}/`);
+        return response.data;
+    } catch (err) {
+        console.log(`Error fetching Teacher ${id}`);
+        return null;
+    }
+}
