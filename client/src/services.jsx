@@ -67,3 +67,56 @@ export const getStudentByID = async (id) => {
         return null;
     }
 }
+
+export const updateUserProfile = async (userData) => {
+    try {
+        const response = await api.put("/users/info/", userData);
+        return response.data;
+    } catch (err) {
+        console.error("Error updating user profile:", err);
+        throw err;
+    }
+};
+
+
+export const updateTeacherProfile = async (teacherData) => {
+    try {
+        const response = await api.put("/teachers/myprofile/", teacherData);
+        return response.data;
+    } catch (err) {
+        console.error("Error updating teacher profile:", err);
+        throw err;
+    }
+};
+
+
+export const updateStudentProfile = async (studentData) => {
+    try {
+        const response = await api.put("/students/myprofile/", studentData);
+        return response.data;
+    } catch (err) {
+        console.error("Error updating student profile:", err);
+        throw err;
+    }
+};
+
+export const deleteUser = async () => {
+    try {
+        const response = await api.delete("/users/delete");
+        return response.data;
+    } catch (err) {
+        console.error("Error deleting user:", err);
+        throw err;
+    }
+};
+
+
+export const getAllInstruments = async () => {
+    try {
+        const response = await api.get("/instruments/");
+        return response.data;
+    } catch (err) {
+        console.error("Error fetching instruments:", err);
+        throw err;
+    }
+};
