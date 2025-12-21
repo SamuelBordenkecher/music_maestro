@@ -12,7 +12,7 @@ function AuthForm() {
     const [role, setRole] = useState(null);
 
     const [email, setEmail] = useState("");
-    const [password, Setpassword] = useState("");
+    const [password, setPassword] = useState("");
     
     
     const [firstName, setFirstName] = useState("");

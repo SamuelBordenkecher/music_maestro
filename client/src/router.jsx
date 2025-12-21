@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import AuthPage from "./pages/AuthPage";
-import HomePage from "./components/HomePage";
+import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import MyProfilePage from "./pages/MyProfilePage.jsx";
 import TeacherProfilePage from "./pages/TeacherProfilePage.jsx";
@@ -22,12 +22,12 @@ const router = createBrowserRouter([
       {path: "/teachers/:id", element: <TeacherProfilePage />},
 
       {
-        element: <ProtectedRoute user={user} />,
+        element: <ProtectedRoute />,
         children: [
             {path: "/myprofile", element: <MyProfilePage />},
 
             {
-                element: <RoleProtectedRoute user={user} role="teacher" />,
+                element: <RoleProtectedRoute role="teacher" />,
                 children: [
                     {path: '/students/:id', element: <StudentProfilePage />},
                     {path: "/lessons/new", element: <LessonFormPage />},
