@@ -54,5 +54,17 @@ class CreatePaymentIntent(UserPermissions):
         except Exception as e:
             return Response({'error': str(e)}, status=s.HTTP_400_BAD_REQUEST)
         
+class TeacherPayments(UserPermissions):
+    def get(self, request):
+        teacher = getattr(request.user, "teacher_profile")
+        if not teacher:
+            return Response({'detail': "Only teachers may view."}, status=s.HTTP_403_FORBIDDEN)
+        
+        payments = Payment.objects.filter(
+            lesson__teacher=teacher,
+            status="paid"
+        )
+        ser_payment = PaymentSerializer(payments, many=True)
+        return Response(ser_payment.data, status=s.HTTP_200_OK)
 
             

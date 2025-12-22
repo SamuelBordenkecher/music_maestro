@@ -4,8 +4,11 @@ from teachers_app.models import TeacherProfile
 from teachers_app.serializers import TeacherProfileSerializer
 from students_app.models import StudentProfile
 from students_app.serializers import StudentProfileSerializer
+from payments_app.serializers import PaymentSerializer
 
 class LessonSerializer(serializers.ModelSerializer):
+
+    payment = PaymentSerializer(read_only=True)
 
     teacher = TeacherProfileSerializer(read_only=True)
     teacher_id = serializers.PrimaryKeyRelatedField(
@@ -19,3 +22,4 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
+

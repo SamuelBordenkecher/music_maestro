@@ -1,12 +1,9 @@
 from rest_framework import serializers
 from .models import Payment
-from lessons_app.serializers import LessonSerializer, Lesson
+from students_app.serializers import StudentProfileSerializer
 
 class PaymentSerializer(serializers.ModelSerializer):
-    lesson = LessonSerializer(read_only=True)
-    lesson_id = serializers.PrimaryKeyRelatedField(
-        queryset=Lesson.objects.all(), write_only=True, source='lesson'
-    )
+    student = StudentProfileSerializer(read_only=True)
 
     class Meta:
         model = Payment

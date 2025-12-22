@@ -42,6 +42,9 @@ def stripe_webhook(request):
             if payment:
                 payment.status = 'paid'
                 payment.save()
+
+                lesson.status = "confirmed"
+                lesson.save
             else:
                 print(f"Webhook: Payment for lesson {lesson_id} does not exist")
 
