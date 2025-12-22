@@ -113,7 +113,12 @@ export default function LessonCard({ teacherId, lessons, setLessons }) {
                             <p><strong>Duration:</strong> {lesson.duration_minutes} minutes</p>
                             <p><strong>Price:</strong> ${lesson.price}</p>
                             <p><strong>Location:</strong> {lesson.location_type}</p>
-                            <p><strong>Status:</strong> {lesson.status}</p>
+                            <p><strong>Status:</strong> {lesson.status}</p> 
+                            {lesson.payment ? (
+                                <p> 
+                                    Payment: <strong>{lesson.payment.status}</strong> (${lesson.payment.amount}) </p> 
+                            ) : ( <p> Payment: Not Paid </p> )
+                            }
                             <Button variant="danger" size="sm" onClick={() => handleDelete(lesson.id)}>Delete</Button>
                         </Card>
                     ))

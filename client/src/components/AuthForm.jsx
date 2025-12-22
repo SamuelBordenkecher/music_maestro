@@ -18,6 +18,8 @@ function AuthForm() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [zipCode, setZipCode] = useState("");
+    const [city, setCity] = useState("")
+    const [state, setState] = useState("")
 
 
     const handleAuth = async(e) => {
@@ -35,6 +37,8 @@ function AuthForm() {
             first_name: firstName,
             last_name: lastName,
             zip_code: zipCode,
+            city: city,
+            state: state,
             is_teacher: role === "teacher",
             is_student: role === "student",
             };
@@ -121,6 +125,27 @@ function AuthForm() {
               name="role"
               checked={role === "student"}
               onChange={() => setRole("student")}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>City</Form.Label>
+            <Form.Control
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+
+          <Form.Group className="mb-3">
+            <Form.Label>State</Form.Label>
+            <Form.Control
+              type="text"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              required
             />
           </Form.Group>
 

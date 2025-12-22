@@ -9,6 +9,7 @@ import {
     getTeacherLessons
 } from "../services";
 import LessonCard from "../components/LessonCard"; // Import the new component
+import TeacherPayments from "../components/TeacherPayments";
 
 export default function MyProfilePage() {
     const { user } = useOutletContext();
@@ -186,14 +187,17 @@ export default function MyProfilePage() {
 
             {/* --- Teacher Lessons Section --- */}
             {user.is_teacher && (
-                <div className="mt-5">
-                    <h3>My Lessons</h3>
-                    <LessonCard 
-                        teacherId={user.id} 
-                        lessons={lessons} 
-                        setLessons={setLessons} 
-                    />
-                </div>
+                <>
+                    <div className="mt-5">
+                        <h3>My Lessons</h3>
+                        <LessonCard 
+                            teacherId={user.id} 
+                            lessons={lessons} 
+                            setLessons={setLessons} 
+                        />
+                    </div>
+                    <TeacherPayments />
+                </>
             )}
         </div>
     );

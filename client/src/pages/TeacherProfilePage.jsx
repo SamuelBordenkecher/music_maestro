@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useOutletContext } from "react-router-dom";
-import { getTeacherByID, getTeacherLessons, payForLesson, messageTeacher } from "../services";
-import { Card, Button, Modal, Form } from "react-bootstrap";
+import { getTeacherByID, getTeacherLessons } from "../services";
+import { Card, Button } from "react-bootstrap";
+import PaymentModal from "../components/PaymentModal";
 
 export default function TeacherProfilePage() {
     const { id } = useParams(); // teacher id from URL
@@ -10,10 +11,9 @@ export default function TeacherProfilePage() {
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [selectedLesson, setSelectedLesson] = useState(null);
-    const [message, setMessage] = useState("");
-    const [paying, setPaying] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,7 +21,6 @@ export default function TeacherProfilePage() {
                 const data = await getTeacherByID(id);
                 setTeacher(data);
 
-                // Fetch lessons using the new teacher_id path
                 const teacherLessons = await getTeacherLessons(id);
                 setLessons(teacherLessons);
             } catch (err) {
@@ -36,35 +35,12 @@ export default function TeacherProfilePage() {
 
     const handleOpenPayment = (lesson) => {
         setSelectedLesson(lesson);
-        setMessage(""); // clear previous message
         setShowPaymentModal(true);
     };
 
     const handleClosePayment = () => {
         setShowPaymentModal(false);
         setSelectedLesson(null);
-    };
-
-    const handlePayAndMessage = async () => {
-        if (!selectedLesson) return;
-        setPaying(true);
-        try {
-            // Pay for the lesson
-            await payForLesson(selectedLesson.id, { amount: selectedLesson.price });
-
-            // Send optional message
-            if (message.trim()) {
-                await messageTeacher(teacher.id, message);
-            }
-
-            alert("Payment successful and message sent!");
-            setShowPaymentModal(false);
-        } catch (err) {
-            console.error("Payment or message failed:", err);
-            alert("Something went wrong. Check console.");
-        } finally {
-            setPaying(false);
-        }
     };
 
     if (loading) return <div>Loading Teacher Profile...</div>;
@@ -101,34 +77,14 @@ export default function TeacherProfilePage() {
             )}
 
             {/* Payment Modal */}
-            <Modal show={showPaymentModal} onHide={handleClosePayment}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Pay & Message Teacher</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {selectedLesson && (
-                        <div>
-                            <p><strong>Lesson:</strong> {new Date(selectedLesson.date_time).toLocaleString()}</p>
-                            <p><strong>Price:</strong> ${selectedLesson.price}</p>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Message to Teacher (optional)</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                />
-                            </Form.Group>
-                        </div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClosePayment}>Cancel</Button>
-                    <Button variant="primary" onClick={handlePayAndMessage} disabled={paying}>
-                        {paying ? "Processing..." : "Pay & Send Message"}
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {showPaymentModal && selectedLesson && (
+                <PaymentModal
+                    show={showPaymentModal}
+                    onClose={handleClosePayment}
+                    lesson={selectedLesson}
+                    teacherId={teacher.id}
+                />
+            )}
         </div>
     );
 }

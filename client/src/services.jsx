@@ -178,11 +178,10 @@ export const getTeacherLessons = async (teacherId) => {
 // ----------------- Student Lesson Actions -----------------
 
 // Pay for a lesson (student only)
-export const payForLesson = async (lessonId, paymentData) => {
+export const payForLesson = async (lessonId) => {
     try {
-        const response = await api.post(`/payments/create-payment-intent/`, {
+        const response = await api.post(`/payments/create-intent/`, {
             lesson_id: lessonId,
-            ...paymentData
         });
         return response.data;
     } catch (err) {
@@ -193,14 +192,10 @@ export const payForLesson = async (lessonId, paymentData) => {
 
 // Send a message to teacher (student only)
 export const messageTeacher = async (teacherId, message) => {
-    try {
-        const response = await api.post(`/messages/`, {
-            teacher_id: teacherId,
-            message
-        });
-        return response.data;
-    } catch (err) {
-        console.error("Error sending message to teacher:", err);
-        throw err;
-    }
+    console.log("Just like the simulations.")
+};
+
+export const getTeacherPayments = async () => {
+    const response = await api.get("payments/teacher/");
+    return response.data
 };
