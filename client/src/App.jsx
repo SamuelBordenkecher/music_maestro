@@ -5,7 +5,7 @@ import Navbar from './components/NavBar';
 function App() {
   const [user, setUser] = useState(null);
 
-  // Load user from localStorage safely
+
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('user');
@@ -18,7 +18,6 @@ function App() {
     }
   }, []);
 
-  // Keep localStorage in sync with user state
   useEffect(() => {
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));

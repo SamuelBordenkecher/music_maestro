@@ -76,7 +76,7 @@ export default function TeacherProfilePage() {
                 ))
             )}
 
-            {/* Payment Modal */}
+           
             {showPaymentModal && selectedLesson && (
                 <PaymentModal
                     show={showPaymentModal}

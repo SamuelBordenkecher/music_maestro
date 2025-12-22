@@ -118,10 +118,7 @@ export const getAllInstruments = async () => {
 
 
 
-// ----------------- Teacher Lessons -----------------
 
-
-// Create a new lesson (teacher only)
 export const createLesson = async (lessonData) => {
     try {
         const response = await api.post(`/lessons/`, lessonData);
@@ -132,7 +129,7 @@ export const createLesson = async (lessonData) => {
     }
 };
 
-// Update a lesson (teacher only)
+
 export const updateLesson = async (lessonId, updatedData) => {
     try {
         const response = await api.patch(`/lessons/${lessonId}/`, updatedData);
@@ -143,18 +140,17 @@ export const updateLesson = async (lessonId, updatedData) => {
     }
 };
 
-// Delete a lesson (teacher only)
+
 export const deleteLesson = async (lessonId) => {
     try {
-        const response = await api.delete(`/lessons/${lessonId}/`);
-        return response.data; // will likely be empty
+        const response = await api.delete(`/lessons/${lessonId}/detail/`);
+        return response.data; 
     } catch (err) {
         console.error("Error deleting lesson:", err);
         throw err;
     }
 };
 
-// ----------------- Student Lesson Actions -----------------
 
 
 
@@ -163,11 +159,12 @@ export const deleteLesson = async (lessonId) => {
 
 
 
-// Get all lessons for a teacher
+
+
 export const getTeacherLessons = async (teacherId) => {
     try {
         const response = await api.get(`/lessons/${teacherId}`);
-        // Filter lessons for this teacher
+        
         return response.data;
     } catch (err) {
         console.error("Error fetching teacher lessons:", err);
@@ -175,9 +172,7 @@ export const getTeacherLessons = async (teacherId) => {
     }
 };
 
-// ----------------- Student Lesson Actions -----------------
 
-// Pay for a lesson (student only)
 export const payForLesson = async (lessonId) => {
     try {
         const response = await api.post(`/payments/create-intent/`, {
@@ -190,7 +185,7 @@ export const payForLesson = async (lessonId) => {
     }
 };
 
-// Send a message to teacher (student only)
+
 export const messageTeacher = async (teacherId, message) => {
     console.log("Just like the simulations.")
 };

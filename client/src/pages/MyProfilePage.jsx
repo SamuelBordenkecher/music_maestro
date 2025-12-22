@@ -8,7 +8,7 @@ import {
     getAllInstruments,
     getTeacherLessons
 } from "../services";
-import LessonCard from "../components/LessonCard"; // Import the new component
+import LessonCard from "../components/LessonCard"; 
 import TeacherPayments from "../components/TeacherPayments";
 
 export default function MyProfilePage() {
@@ -31,7 +31,7 @@ export default function MyProfilePage() {
         fetchInstruments();
     }, []);
 
-    // --- Fetch teacher lessons ---
+
     useEffect(() => {
         const fetchLessons = async () => {
             if (user?.is_teacher) {
@@ -106,7 +106,7 @@ export default function MyProfilePage() {
         <div className="container mt-4">
             <h2>My Profile</h2>
 
-            {/* User Info (read-only) */}
+            
             <div className="mb-4">
                 <p><strong>Name:</strong> {user.first_name} {user.last_name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
@@ -116,7 +116,7 @@ export default function MyProfilePage() {
                 <p><strong>State:</strong> {user.state}</p>
             </div>
 
-            {/* Profile Edit / Display */}
+            
             {editMode ? (
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
@@ -185,7 +185,7 @@ export default function MyProfilePage() {
                 </div>
             )}
 
-            {/* --- Teacher Lessons Section --- */}
+           
             {user.is_teacher && (
                 <>
                     <div className="mt-5">

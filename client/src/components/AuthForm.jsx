@@ -62,7 +62,6 @@ function AuthForm() {
 
   return (
     <Form onSubmit={handleAuth}>
-      {/* EMAIL */}
       <Form.Group className="mb-3">
         <Form.Label>Email</Form.Label>
         <Form.Control
@@ -73,7 +72,7 @@ function AuthForm() {
         />
       </Form.Group>
 
-      {/* PASSWORD */}
+ 
       <Form.Group className="mb-3">
         <Form.Label>Password</Form.Label>
         <Form.Control
@@ -84,10 +83,9 @@ function AuthForm() {
         />
       </Form.Group>
 
-      {/* SIGNUP FIELDS */}
       {isSignup && (
         <>
-          {/* FIRST NAME */}
+         
           <Form.Group className="mb-3">
             <Form.Label>First Name</Form.Label>
             <Form.Control
@@ -98,7 +96,7 @@ function AuthForm() {
             />
           </Form.Group>
 
-          {/* LAST NAME */}
+      
           <Form.Group className="mb-3">
             <Form.Label>Last Name</Form.Label>
             <Form.Control
@@ -109,7 +107,7 @@ function AuthForm() {
             />
           </Form.Group>
 
-          {/* ROLE */}
+       
           <Form.Group className="mb-3">
             <Form.Label>Account Type</Form.Label>
             <Form.Check
@@ -149,7 +147,7 @@ function AuthForm() {
             />
           </Form.Group>
 
-          {/* ZIP CODE */}
+         
           <Form.Group className="mb-3">
             <Form.Label>Zip Code</Form.Label>
             <Form.Control
@@ -162,7 +160,6 @@ function AuthForm() {
         </>
       )}
 
-      {/* TOGGLE */}
       <Form.Group className="mb-3">
         <Form.Check
           type="switch"
