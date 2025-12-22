@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useOutletContext } from "react-router-dom";
 
 function RoleProtectedRoute({ role }) {
-    const { user } = useOutletContext();
+    const { user, setUser } = useOutletContext();
   if (!user) {
       return <Navigate to='/auth' />;
   }

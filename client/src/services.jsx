@@ -4,6 +4,11 @@ export const api = axios.create({
     baseURL: "http://127.0.0.1:8000/api/",
 })
 
+const storedUser = JSON.parse(localStorage.getItem("user"));
+if (storedUser?.token) {
+    api.defaults.headers.common["Authorization"] = `Token ${storedUser.token}`;
+}
+
 
 export const signUp = async(userObj) => {
     let response = await api.post("users/signup/", userObj)
@@ -27,6 +32,7 @@ export const logIn = async (userCred) => {
     alert(response.data)
     return null
 }
+
 
 export const logOut = async () => {
     let response = await api.post("users/logout/");
@@ -68,17 +74,6 @@ export const getStudentByID = async (id) => {
     }
 }
 
-export const updateUserProfile = async (userData) => {
-    try {
-        const response = await api.put("/users/info/", userData);
-        return response.data;
-    } catch (err) {
-        console.error("Error updating user profile:", err);
-        throw err;
-    }
-};
-
-
 export const updateTeacherProfile = async (teacherData) => {
     try {
         const response = await api.put("/teachers/myprofile/", teacherData);
@@ -102,7 +97,7 @@ export const updateStudentProfile = async (studentData) => {
 
 export const deleteUser = async () => {
     try {
-        const response = await api.delete("/users/delete");
+        const response = await api.delete("/users/delete/");
         return response.data;
     } catch (err) {
         console.error("Error deleting user:", err);

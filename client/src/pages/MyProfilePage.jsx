@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { 
-    updateUserProfile, 
     updateTeacherProfile, 
     updateStudentProfile, 
     deleteUser,
@@ -10,7 +9,7 @@ import {
 } from "../services";
 
 export default function MyProfilePage() {
-    const { user, setUser } = useOutletContext();
+    const { user } = useOutletContext();
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({});
     const [saving, setSaving] = useState(false);
@@ -49,16 +48,6 @@ export default function MyProfilePage() {
         e.preventDefault();
         setSaving(true);
         try {
-            const updatedUser = await updateUserProfile({
-                first_name: formData.first_name,
-                last_name: formData.last_name,
-                email: formData.email,
-                date_of_birth: formData.date_of_birth,
-                zip_code: formData.zip_code,
-                city: formData.city,
-                state: formData.state
-            });
-
             if (user.is_teacher) {
                 await updateTeacherProfile({
                     bio: formData.bio,
@@ -75,10 +64,9 @@ export default function MyProfilePage() {
                 });
             }
 
-            setUser(updatedUser);
             setEditMode(false);
         } catch (err) {
-            console.error(err);
+            console.error("Error updating profile:", err);
         } finally {
             setSaving(false);
         }
@@ -88,11 +76,10 @@ export default function MyProfilePage() {
         if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
         try {
             await deleteUser();
-            setUser(null);
-            alert("Account deleted.");
+            localStorage.removeItem("user");
             window.location.href = "/auth";
         } catch (err) {
-            console.error(err);
+            console.error("Failed to delete account:", err);
             alert("Failed to delete account.");
         }
     };
@@ -100,48 +87,50 @@ export default function MyProfilePage() {
     return (
         <div className="container mt-4">
             <h2>My Profile</h2>
+
+            {/* User Info (read-only) */}
+            <div className="mb-4">
+                <p><strong>Name:</strong> {user.first_name} {user.last_name}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Date of Birth:</strong> {user.date_of_birth}</p>
+                <p><strong>Zip Code:</strong> {user.zip_code}</p>
+                <p><strong>City:</strong> {user.city}</p>
+                <p><strong>State:</strong> {user.state}</p>
+            </div>
+
+            {/* Profile Edit / Display */}
             {editMode ? (
                 <Form onSubmit={handleSubmit}>
-                    {["first_name","last_name","email","date_of_birth","zip_code","city","state"].map(f => (
-                        <Form.Group className="mb-3" key={f}>
-                            <Form.Label>{f.replace("_", " ")}</Form.Label>
-                            <Form.Control
-                                type={f==="date_of_birth"?"date":"text"}
-                                name={f}
-                                value={formData[f] || ""}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
-                    ))}
-
                     <Form.Group className="mb-3">
                         <Form.Label>Bio</Form.Label>
                         <Form.Control as="textarea" rows={3} name="bio" value={formData.bio || ""} onChange={handleChange}/>
                     </Form.Group>
 
                     {user.is_teacher && (
-                        <Form.Group className="mb-3">
-                            <Form.Label>Default Rate</Form.Label>
-                            <Form.Control type="number" name="default_rate" value={formData.default_rate || ""} onChange={handleChange}/>
-                        </Form.Group>
-                    )}
+                        <>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Default Rate</Form.Label>
+                                <Form.Control type="number" name="default_rate" value={formData.default_rate || ""} onChange={handleChange}/>
+                            </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>Instruments</Form.Label>
-                        <Form.Control 
-                            as="select" 
-                            name="instruments" 
-                            multiple 
-                            value={formData.instruments || []} 
-                            onChange={handleChange}
-                        >
-                            {instrumentsOptions.map(instr => (
-                                <option key={instr.id} value={instr.id}>
-                                    {instr.name}
-                                </option>
-                            ))}
-                        </Form.Control>
-                    </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Instruments</Form.Label>
+                                <Form.Control 
+                                    as="select" 
+                                    name="instruments" 
+                                    multiple 
+                                    value={formData.instruments || []} 
+                                    onChange={handleChange}
+                                >
+                                    {instrumentsOptions.map(instr => (
+                                        <option key={instr.id} value={instr.id}>
+                                            {instr.name}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                        </>
+                    )}
 
                     {!user.is_teacher && (
                         <>
@@ -168,17 +157,12 @@ export default function MyProfilePage() {
                 </Form>
             ) : (
                 <div>
-                    <p><strong>Name:</strong> {user.first_name} {user.last_name}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Date of Birth:</strong> {user.date_of_birth}</p>
-                    <p><strong>Zip Code:</strong> {user.zip_code}</p>
-                    <p><strong>City:</strong> {user.city}</p>
-                    <p><strong>State:</strong> {user.state}</p>
-                    <p><strong>Bio:</strong> {user.bio}</p>
                     {user.is_teacher && <p><strong>Rate:</strong> ${user.default_rate}/hour</p>}
                     {user.instruments?.length > 0 && <p><strong>Instruments:</strong> {user.instruments.map(i => i.name).join(", ")}</p>}
                     {!user.is_teacher && <p><strong>Proficiency Level:</strong> {user.proficiency_level || "N/A"}</p>}
-                    <Button onClick={startEdit}>Edit Profile</Button>{" "}
+                    {!user.is_teacher && <p><strong>Learning Goals:</strong> {user.learning_goals}</p>}
+
+                    <Button onClick={() => setEditMode(true)}>Edit Profile</Button>{" "}
                     <Button variant="danger" onClick={handleDelete}>Delete Account</Button>
                 </div>
             )}
