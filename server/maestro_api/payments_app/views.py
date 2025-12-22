@@ -21,7 +21,12 @@ class CreatePaymentIntent(UserPermissions):
         lesson_id = request.data.get('lesson_id')
         lesson = get_object_or_404(Lesson, id=lesson_id)
 
-        if lesson.student.user != request.user:
+        if not lesson.student:
+            if not hasattr(request.user, 'student_profile'):
+                return Response({'detail': 'Only students can pay for lessons'}, status=s.HTTP_403_FORBIDDEN)
+            lesson.student = request.user.student_profile
+            lesson.save()
+        elif lesson.student.user != request.user:
             return Response(status=s.HTTP_403_FORBIDDEN)
         
         amount = Decimal(lesson.price)

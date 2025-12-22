@@ -2,9 +2,10 @@ from rest_framework import serializers
 from .models import StudentProfile
 from instruments_app.models import Instrument
 from instruments_app.serializers import InstrumentSerializer
+from user_app.serializers import UserSerializer
 
 class StudentProfileSerializer(serializers.ModelSerializer):
-    
+    user = UserSerializer(read_only=True)
     instruments = InstrumentSerializer(many=True, read_only=True)
     
     instrument_ids = serializers.PrimaryKeyRelatedField(

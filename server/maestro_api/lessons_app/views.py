@@ -10,21 +10,11 @@ from rest_framework import status as s
 
 class LessonList(UserPermissions):
 
-    def get(self, request):
-        user = request.user
-
-        if user.is_teacher:
-            lessons = Lesson.objects.filter(teacher=user.teacher_profile)
-        elif user.is_student:
-            lessons = Lesson.objects.filter(student=user.student_profile)
-        else:
-            return Response(
-                {"detail": "User is unassigned"}, status=s.HTTP_400_BAD_REQUEST   
-            )
-        
-        ser_lesson = LessonSerializer(lessons, many=True)
-        return Response(ser_lesson.data, status=s.HTTP_200_OK)
-
+    def get(self, request, teacher_id):
+        lessons = Lesson.objects.filter(teacher_id=teacher_id)
+        serializer = LessonSerializer(lessons, many=True)
+        return Response(serializer.data, status=s.HTTP_200_OK)
+    
     def post(self, request):
         user = request.user
 
@@ -36,6 +26,9 @@ class LessonList(UserPermissions):
         data = request.data.copy()
         data['teacher_id'] = user.teacher_profile.id
         data['status'] = 'pending'
+
+        if 'student_id' not in data:
+            data['student_id'] = None
 
         ser_lesson = LessonSerializer(data=data)
         if ser_lesson.is_valid():

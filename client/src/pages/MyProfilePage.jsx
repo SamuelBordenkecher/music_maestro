@@ -5,8 +5,10 @@ import {
     updateTeacherProfile, 
     updateStudentProfile, 
     deleteUser,
-    getAllInstruments
+    getAllInstruments,
+    getTeacherLessons
 } from "../services";
+import LessonCard from "../components/LessonCard"; // Import the new component
 
 export default function MyProfilePage() {
     const { user } = useOutletContext();
@@ -14,6 +16,7 @@ export default function MyProfilePage() {
     const [formData, setFormData] = useState({});
     const [saving, setSaving] = useState(false);
     const [instrumentsOptions, setInstrumentsOptions] = useState([]);
+    const [lessons, setLessons] = useState([]);
 
     useEffect(() => {
         const fetchInstruments = async () => {
@@ -26,6 +29,21 @@ export default function MyProfilePage() {
         };
         fetchInstruments();
     }, []);
+
+    // --- Fetch teacher lessons ---
+    useEffect(() => {
+        const fetchLessons = async () => {
+            if (user?.is_teacher) {
+                try {
+                    const data = await getTeacherLessons(user.id);
+                    setLessons(data);
+                } catch (err) {
+                    console.error("Failed to fetch lessons", err);
+                }
+            }
+        };
+        fetchLessons();
+    }, [user]);
 
     if (!user) return <div>Please log in.</div>;
 
@@ -63,7 +81,6 @@ export default function MyProfilePage() {
                     learning_goals: formData.learning_goals
                 });
             }
-
             setEditMode(false);
         } catch (err) {
             console.error("Error updating profile:", err);
@@ -164,6 +181,18 @@ export default function MyProfilePage() {
 
                     <Button onClick={() => setEditMode(true)}>Edit Profile</Button>{" "}
                     <Button variant="danger" onClick={handleDelete}>Delete Account</Button>
+                </div>
+            )}
+
+            {/* --- Teacher Lessons Section --- */}
+            {user.is_teacher && (
+                <div className="mt-5">
+                    <h3>My Lessons</h3>
+                    <LessonCard 
+                        teacherId={user.id} 
+                        lessons={lessons} 
+                        setLessons={setLessons} 
+                    />
                 </div>
             )}
         </div>

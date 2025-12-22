@@ -34,6 +34,7 @@ export default function StudentProfilePage() {
             <h2>
                 {student.user.first_name} {student.user.last_name}
             </h2>
+            <p><strong>Email:</strong> {student.user.email}</p>
             {student.distance_miles !== null && user && (
                 <p>Distance: {student.distance_miles} miles away</p>
             )}

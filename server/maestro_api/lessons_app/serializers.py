@@ -13,7 +13,7 @@ class LessonSerializer(serializers.ModelSerializer):
     )
     student = StudentProfileSerializer(read_only=True)
     student_id = serializers.PrimaryKeyRelatedField(
-        queryset=StudentProfile.objects.all(), write_only=True, source='student'
+        queryset=StudentProfile.objects.all(), write_only=True, source='student', required=False, allow_null=True
     )
 
     class Meta:

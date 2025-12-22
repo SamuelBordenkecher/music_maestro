@@ -5,7 +5,7 @@ from students_app.models import StudentProfile
 
 class Lesson(models.Model):
     teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE, related_name='lessons')
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='lessons')
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='lessons', null=True, blank=True)
     date_time = models.DateTimeField()
     duration_minutes = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)

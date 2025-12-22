@@ -115,3 +115,92 @@ export const getAllInstruments = async () => {
         throw err;
     }
 };
+
+
+
+// ----------------- Teacher Lessons -----------------
+
+
+// Create a new lesson (teacher only)
+export const createLesson = async (lessonData) => {
+    try {
+        const response = await api.post(`/lessons/`, lessonData);
+        return response.data;
+    } catch (err) {
+        console.error("Error creating lesson:", err);
+        throw err;
+    }
+};
+
+// Update a lesson (teacher only)
+export const updateLesson = async (lessonId, updatedData) => {
+    try {
+        const response = await api.patch(`/lessons/${lessonId}/`, updatedData);
+        return response.data;
+    } catch (err) {
+        console.error("Error updating lesson:", err);
+        throw err;
+    }
+};
+
+// Delete a lesson (teacher only)
+export const deleteLesson = async (lessonId) => {
+    try {
+        const response = await api.delete(`/lessons/${lessonId}/`);
+        return response.data; // will likely be empty
+    } catch (err) {
+        console.error("Error deleting lesson:", err);
+        throw err;
+    }
+};
+
+// ----------------- Student Lesson Actions -----------------
+
+
+
+
+
+
+
+
+// Get all lessons for a teacher
+export const getTeacherLessons = async (teacherId) => {
+    try {
+        const response = await api.get(`/lessons/${teacherId}`);
+        // Filter lessons for this teacher
+        return response.data;
+    } catch (err) {
+        console.error("Error fetching teacher lessons:", err);
+        throw err;
+    }
+};
+
+// ----------------- Student Lesson Actions -----------------
+
+// Pay for a lesson (student only)
+export const payForLesson = async (lessonId, paymentData) => {
+    try {
+        const response = await api.post(`/payments/create-payment-intent/`, {
+            lesson_id: lessonId,
+            ...paymentData
+        });
+        return response.data;
+    } catch (err) {
+        console.error("Error paying for lesson:", err);
+        throw err;
+    }
+};
+
+// Send a message to teacher (student only)
+export const messageTeacher = async (teacherId, message) => {
+    try {
+        const response = await api.post(`/messages/`, {
+            teacher_id: teacherId,
+            message
+        });
+        return response.data;
+    } catch (err) {
+        console.error("Error sending message to teacher:", err);
+        throw err;
+    }
+};
